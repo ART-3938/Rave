@@ -85,10 +85,11 @@ task main()
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
 
-  while (true)
-  {
-  	findBeaconAngle();
-  }
+	findBeaconAngle();
+	while (true)
+	{
+		// track and move (SMOOTHLY!?!?)	
+	}
 }
 
 float findBeaconAngle(){
