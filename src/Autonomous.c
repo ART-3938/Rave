@@ -25,6 +25,19 @@
 
 #include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
 
+float findBeaconAngle();
+float findLeftAngle();
+float findRightAngle();
+float findBackAngle();
+void println(int line, string s);
+
+public:
+	int dist; // distance from robot (either front center or left center) to the beacon
+	float angle;  // angle from robot's center to the beacon
+	// FIND ZONE ANGLE EDGES!!!! PREFERABLY ARRAY OF FLOATS
+	// vector currentHeading; // this is the current heading vector of the robot
+	
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -43,10 +56,9 @@
 
 void initializeRobot()
 {
-  // Place code here to sinitialize servos to starting positions.
-  // Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
-
-  return;
+	angle = findBeaconAngle();
+	// dist = find distance
+	return;
 }
 
 
@@ -73,9 +85,9 @@ void initializeRobot()
 
 task main()
 {
-  initializeRobot();
+	initializeRobot();
 
-  waitForStart(); // Wait for the beginning of autonomous phase.
+	waitForStart(); // Wait for the beginning of autonomous phase.
 
   ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////
@@ -115,11 +127,36 @@ float findBeaconAngle(){
 	return -1;
 }
 
-float findLeftAngle(){
+// Working??!?!?!!
+float findAngle(Sensor eye, Servo eyeMuscle){
 	// copy right angle code
 	// GENERALIZE??!?!
+	int zone = HTIRS2readDCDir(eye);
+
+	float dAl = 0; // change in servo rotation angle to the left
+	while (HTIRS2readDCDir(eye) == zone){
+		// rotate servo left in small increments
+		dAl += 1;  // increment by angle change
+	}	
+
+	while (HTIRS2readDCDir(eye) != zone){
+		// rotate back into the zone
+	}
+
+	float dAr = 0;
+	while (HTIRS2readDCDir(eye) == zone){
+		// rotate servo right in small increments
+		dAr += 1; // increment by angle change
+	}
+
+	// dAl = size of zone - dAl; // dAl is a "complement" of dAr - use to find more accurate
+	float avgdA = (dAl + dAr)/2; // average displacement to each side
+
+	float angle = 0; // zone extreme - avgdA
+	return angle;
 }
 
+// Find the "exact" angle of the beacon relative to the right IR beacon's normal axis
 float findRightAngle(){
 	int zone = HTIRS2readDCDir(rightIR);
 
