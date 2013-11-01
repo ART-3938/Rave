@@ -98,14 +98,51 @@ float findBeaconAngle(){
 	int Lzone = HTIRS2readDCDir(leftIR);
 	int Rzone = HTIRS2readDCDir(rightIR);
 	while (Lzone < 0){
-		//rotate and find beacon
+		// rotate and find beacon
 	}
 	while (Rzone < 0){
-		//rotate and find beacon
+		// rotate and find beacon
 	}
 	println(4, "LZ " + Lzone + " RZ " + Rzone);
 
+	// Rotate servos left and right to accurately locate signal source
+	// Left "eye" angle
+	// Right "eye" angle
+
+	// Math to find angle to the center front of the robot
+
 	return -1;
+}
+
+float findLeftAngle(){
+	// copy right angle code
+	// GENERALIZE??!?!
+}
+
+float findRightAngle(){
+	int zone = HTIRS2readDCDir(rightIR);
+
+	float dAl = 0; // change in servo rotation angle to the left
+	while (HTIRS2readDCDir(rightIR) == zone){
+		// rotate servo left in small increments
+		dAl += 1;
+	}	
+
+	while (HTIRS2readDCDir(rightIR) != zone){
+		// rotate back into the zone
+	}
+
+	float dAr = 0;
+	while (HTIRS2readDCDir(rightIR) == zone){
+		// rotate servo right in small increments
+		dAr += 1;
+	}
+
+	// dAl = size of zone - dAl // dAl is a "complement" of dAr - use to find more accurate
+	float avgdA = (dAl + dAr)/2; // average displacement to each side
+
+	float angle = 0; // zone extreme - avgdA
+	return angle;
 }
 
 void println(int line, string s){
