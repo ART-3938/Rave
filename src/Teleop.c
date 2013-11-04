@@ -47,7 +47,7 @@ task main()
     {
     	if(!rollerOn)
     	{
-    		motor[Rollor] = 50;
+    		motor[Roller] = 50;
     	}
     	else
     	{
