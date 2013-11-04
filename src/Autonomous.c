@@ -25,16 +25,17 @@
 
 #include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
 
+int dist; // distance from robot (either front center or left center) to the beacon
+float angle;  // angle from robot's center to the beacon
+	// FIND ZONE ANGLE EDGES!!!! PREFERABLY ARRAY OF FLOATS
+	// vector currentHeading; // this is the current heading vector of the robot
+
+
 float findBeaconAngle();
 float findLeftAngle();
 float findRightAngle();
 float findBackAngle();
 void println(int line, string s);
-
-#define int dist; // distance from robot (either front center or left center) to the beacon
-#define float angle;  // angle from robot's center to the beacon
-	// FIND ZONE ANGLE EDGES!!!! PREFERABLY ARRAY OF FLOATS
-	// vector currentHeading; // this is the current heading vector of the robot
 
 
 
