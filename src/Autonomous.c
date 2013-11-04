@@ -31,12 +31,11 @@ float findRightAngle();
 float findBackAngle();
 void println(int line, string s);
 
-public:
-	int dist; // distance from robot (either front center or left center) to the beacon
-	float angle;  // angle from robot's center to the beacon
+#define int dist; // distance from robot (either front center or left center) to the beacon
+#define float angle;  // angle from robot's center to the beacon
 	// FIND ZONE ANGLE EDGES!!!! PREFERABLY ARRAY OF FLOATS
 	// vector currentHeading; // this is the current heading vector of the robot
-	
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +56,7 @@ public:
 void initializeRobot()
 {
 	angle = findBeaconAngle();
-	// dist = find distance
+	dist = 0; //find distance
 	return;
 }
 
@@ -100,7 +99,7 @@ task main()
 	findBeaconAngle();
 	while (true)
 	{
-		// track and move (SMOOTHLY!?!?)	
+		// track and move (SMOOTHLY!?!?)
 	}
 }
 
@@ -137,7 +136,7 @@ float findAngle(Sensor eye, Servo eyeMuscle){
 	while (HTIRS2readDCDir(eye) == zone){
 		// rotate servo left in small increments
 		dAl += 1;  // increment by angle change
-	}	
+	}
 
 	while (HTIRS2readDCDir(eye) != zone){
 		// rotate back into the zone
@@ -164,7 +163,7 @@ float findRightAngle(){
 	while (HTIRS2readDCDir(rightIR) == zone){
 		// rotate servo left in small increments
 		dAl += 1;
-	}	
+	}
 
 	while (HTIRS2readDCDir(rightIR) != zone){
 		// rotate back into the zone
