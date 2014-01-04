@@ -139,14 +139,12 @@ task main()
 
 	 	// Move arm using right joystick
 	 	// negative because of our particular wiring polarity
-	 	if (SensorValue(ArmLimit) == 0){
-		 	short arm = -map(joystick.joy1_y2, 127, armMax);
-		 	if (arm < 0) arm = arm - 15; // add power when moving up (more negative)
-		 	motor[Arm] = arm;
+		short arm = map(joystick.joy1_y2, 127, armMax);
+		if (arm > 0) arm = arm + 15; // add power when moving up (more negative)
+		if (SensorValue(ArmLimit) == 1 && arm > 0) {
+			arm = 0
 		}
-		else {
-			motor[Arm] = 0;
-		}
+		motor[Arm] = -arm;
 
 // Driving - tank drive control
 //		motor[Left] = - map(joystick.joy1_y1, 127, maxPower);
