@@ -16,13 +16,19 @@
 
 #include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
 
+#define SCALE .7 // Scale factor for the x axis of the steering joystick
+#define FAST_POWER 100
+#define SLOW_POWER 25
+#define CLAW_CLOSED_POS 75
+#define CLAW_OPENED_POS 15
+#define ARM_MAX_POWER 20
+#define ELEVATOR_POWER -35
+
 short map (short in, float max, float newMax);
 
 void initializeRobot()
 {
-  // Place code here to sinitialize servos to starting positions.
-  // Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
-
+  servo[Claw] = CLAW_OPEN_POS;
   return;
 }
 
@@ -39,40 +45,23 @@ task main()
 {
   initializeRobot();
 
-  float scale = .7;
-  float fastPower = 100;
-  float slowPower = 25;
-  float maxPower = fastPower;
-
-  bool clawMoving = false;
-  short fastServoRate = 0;
-  short normalServoRate = 30;
-  short clawOpenPos = 75;
-  short clawClosePos = 15;
-
-  short armMax = 20;
-
-  short elevatorOn = -35;
+  float maxPower = FAST_POWER;
   bool elevatorButtonPressed = false;
 
-  bool toggle = false;
-
   waitForStart();   // wait for start of tele-op phase
-	getJoystickSettings(joystick);
+  getJoystickSettings(joystick);
   while (true)
   {
-	 	//Claw Operations
+		//Claw Operations
 		if (joy1Btn(5) == 1)
 		{
-			// fully open claw
-			servoChangeRate[Claw] = fastServoRate;
-			servoTarget[Claw] = clawOpenPos;
+			// fully close claw
+			servo[Claw] = CLAW_CLOSE_POS;
 		}
 		else if (joy1Btn(6) == 1)
 		{
-			// close claw
-			servoChangeRate[Claw] = fastServoRate;
-			servoTarget[Claw] = clawClosePos;
+			// open claw
+			servo[Claw] = CLAW_OPEN_POS;
 		}
 
 		//Elevator toggle
@@ -80,7 +69,7 @@ task main()
 		{
 			if (motor[Elevator] == 0)
 			{
-				motor[Elevator] = elevatorOn;
+				motor[Elevator] = ELEVATOR_POWER;
 			}
 			else
 			{
@@ -97,18 +86,18 @@ task main()
 		if (joy1Btn(8) == 1)
 		{
 			// downshift to slow, precision mode
-			maxPower = slowPower;
+			maxPower = SLOW_POWER;
 		}
 		else
 		{
-			maxPower = fastPower;
+			maxPower = FAST_POWER;
 		}
 
 		// Driving control only using the left joystick
-	  short y = map(joystick.joy1_y1, 127, maxPower);
-	  short x = map(joystick.joy1_x1, 127, maxPower);
-	  short left =  - (y + (x * scale));
-	 	short right = (y - (x * scale));
+		short y = map(joystick.joy1_y1, 127, maxPower);
+		short x = map(joystick.joy1_x1, 127, maxPower);
+		short left =  (y + (x * SCALE));
+	 	short right = - (y - (x * SCALE));
 	 	// holding down button 7 will reverse the direction of the drive
 	 	if (joy1Btn(7) == 1) {
 	 		left = -left;
@@ -123,7 +112,6 @@ task main()
 		if (arm > 0) arm = arm + 15; // add power when moving up (more negative)
 		if (SensorValue(ArmLimit) == 1 && arm > 0) {
 			arm = 0;
-			//servoTarget[Claw] = clawClosePos; //close is open CHANGE
 		}
 		motor[Arm] = -arm;
 
