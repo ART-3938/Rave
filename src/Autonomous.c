@@ -104,16 +104,19 @@ task main()
 	}
 }
 
-float findBeaconAngle(){
+float findBeaconAngle()
+{
 	float x = 1.0; //distance between sensors in inches
 
 	//find zones on left and right eyes
 	int Lzone = HTIRS2readDCDir(leftIR);
 	int Rzone = HTIRS2readDCDir(rightIR);
-	while (Lzone < 0){
+	while (Lzone < 0)
+	{
 		// rotate and find beacon
 	}
-	while (Rzone < 0){
+	while (Rzone < 0)
+	{
 		// rotate and find beacon
 	}
 	println(4, "LZ " + Lzone + " RZ " + Rzone);
