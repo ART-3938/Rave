@@ -62,26 +62,6 @@ task main()
   while (true)
   {
 	 	//Claw Operations
-	 	if (joy1Btn(5) == 1 && !clawMoving)
-	 	{
-	 		// open claw
-	 		clawMoving = true;
-	 		servoChangeRate[Claw] = normalServoRate;
-	 		servoTarget[Claw] = servo[Claw] + 1;
-		}
-		else if (joy1Btn(6) == 1 && !clawMoving)
-		{
-			// close claw
-			clawMoving = true;
-			servoChangeRate[Claw] = normalServoRate;
-			servoTarget[Claw] = servo[Claw] - 1;
-		}
-		else if (joy1Btn(5) == 0 && joy1Btn(6) == 0)
-		{
-			clawMoving = false;
-			servoTarget[Claw] = servo[Claw] + 0;
-		}
-
 		if (joy1Btn(5) == 1)
 		{
 			// fully open claw
@@ -142,7 +122,8 @@ task main()
 		short arm = map(joystick.joy1_y2, 127, armMax);
 		if (arm > 0) arm = arm + 15; // add power when moving up (more negative)
 		if (SensorValue(ArmLimit) == 1 && arm > 0) {
-			arm = 0
+			arm = 0;
+			servoTarget[Claw] = clawClosePos; //close is open CHANGE
 		}
 		motor[Arm] = -arm;
 
