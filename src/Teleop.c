@@ -123,7 +123,7 @@ task main()
 		if (arm > 0) arm = arm + 15; // add power when moving up (more negative)
 		if (SensorValue(ArmLimit) == 1 && arm > 0) {
 			arm = 0;
-			servoTarget[Claw] = clawClosePos; //close is open CHANGE
+			//servoTarget[Claw] = clawClosePos; //close is open CHANGE
 		}
 		motor[Arm] = -arm;
 
