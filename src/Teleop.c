@@ -40,7 +40,7 @@ task main()
   initializeRobot();
 
   float scale = .7;
-  float fastPower = 90;
+  float fastPower = 100;
   float slowPower = 25;
   float maxPower = fastPower;
 
