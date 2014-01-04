@@ -95,17 +95,6 @@ task main()
 			servoTarget[Claw] = clawClosePos;
 		}
 
-		// button 4 reverses direction of drive motors
-		if (joy1Btn(4) == 1 && !toggle)
-		{
-			toggle = true;
-			bMotorReflected[Left] = !bMotorReflected[Left];
-			bMotorReflected[Right] = !bMotorReflected[Right];
-		}
-		else if (joy1Btn(4) == 0 && toggle){
-			toggle = false;
-		}
-
 		//Elevator toggle
 		if (joy1Btn(1) == 1 && !elevatorButtonPressed)
 		{
@@ -138,8 +127,15 @@ task main()
 		// Driving control only using the left joystick
 	  short y = map(joystick.joy1_y1, 127, maxPower);
 	  short x = map(joystick.joy1_x1, 127, maxPower);
-	  motor[Left] =  - (y + (x * scale));
-	 	motor[Right] = (y - (x * scale));
+	  short left =  - (y + (x * scale));
+	 	short right = (y - (x * scale));
+	 	// holding down button 7 will reverse the direction of the drive
+	 	if (joy1Btn(7) == 1) {
+	 		left = -left;
+	 		right = -right;
+	 	}
+	 	motor[Left] = left;
+	 	motor[Right] = right;
 
 	 	// Move arm using right joystick
 	 	// negative because of our particular wiring polarity
