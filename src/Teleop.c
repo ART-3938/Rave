@@ -19,7 +19,7 @@
 
 
 /***********************************************************************
-	Teleop program for Acton Roboticc Team #3938 in the challenge "Block Party"
+	Teleop program for Acton Robotics Team #3938 in the challenge "Block Party"
 	The robot has the following parts:
 		Elevator - (tetrix motor) a converyor belt that carries blocks into the crates
 		Arm - (tetrix motor) a mechanism that picks up blocks and places them in the Elevator
