@@ -1,5 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  none)
-#pragma config(Sensor, S2,     ArmLimit,       sensorTouch)
+#pragma config(Sensor, S2,     ArmLimitUp,     sensorTouch)
+#pragma config(Sensor, S3,     ArmLimitDown,   sensorTouch)
 #pragma config(Motor,  motorA,          SwagA,         tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorB,          SwagB,         tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     Left,          tmotorTetrix, openLoop)
@@ -16,30 +17,46 @@
 
 #include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
 
+
+/***********************************************************************
+	Teleop program for Acton Roboticc Team #3938 in the challenge "Block Party"
+	The robot has the following parts:
+		Elevator - (tetrix motor) a converyor belt that carries blocks into the crates
+		Arm - (tetrix motor) a mechanism that picks up blocks and places them in the Elevator
+		Claw - (servo) part of the arm that grips the blocks
+		ArmLimitUp - (touch sensor) stops the arm from rising too high
+		ArmLimitDown - (touch sensor) stops the arm from falling too low.
+
+	Controls:
+		left joystick - left wheel
+		right joystick - right wheel
+		button 1 - toggle elevator motor
+		button 4 - move arm up
+		button 5 - close claw
+		button 6 - open claw
+		button 8 - speec shift toggler (fast/slow)
+
+	@author Koushik Krishnan, Andrew Dai
+************************************************************************/
 #define SCALE .7 // Scale factor for the x axis of the steering joystick
 #define FAST_POWER 100
 #define SLOW_POWER 25
-#define CLAW_CLOSED_POS 75
-#define CLAW_OPENED_POS 15
+#define CLAW_CLOSE_POS 75
+#define CLAW_OPEN_POS 15
 #define ARM_MAX_POWER 20
 #define ELEVATOR_POWER -35
 
 short map (short in, float max, float newMax);
 
+/*
+	initialize robot to open the claw
+*/
 void initializeRobot()
 {
   servo[Claw] = CLAW_OPEN_POS;
   return;
 }
 
-/* Single stick drive (left)
-// Bottom right bumper (8) shifts speed (hold for slow/precision mode)
-// Bottom left bumper (7) reverses robot drive direction
-// Top right bumper (6) is for closing the claw
-// Top left bumper (5) is for opening the claw
-// Right stick vertical axis is raising and lowering the arm
-// Button 1 toggles elevator
-*/
 
 task main()
 {
@@ -93,31 +110,31 @@ task main()
 			maxPower = FAST_POWER;
 		}
 
-		// Driving control only using the left joystick
-		short y = map(joystick.joy1_y1, 127, maxPower);
-		short x = map(joystick.joy1_x1, 127, maxPower);
-		short left =  (y + (x * SCALE));
-	 	short right = - (y - (x * SCALE));
-	 	// holding down button 7 will reverse the direction of the drive
-	 	if (joy1Btn(7) == 1) {
-	 		left = -left;
-	 		right = -right;
-	 	}
-	 	motor[Left] = left;
-	 	motor[Right] = right;
-
-	 	// Move arm using right joystick
-	 	// negative because of our particular wiring polarity
-		short arm = map(joystick.joy1_y2, 127, armMax);
-		if (arm > 0) arm = arm + 15; // add power when moving up (more negative)
-		if (SensorValue(ArmLimit) == 1 && arm > 0) {
+		// Controlling the movement of the arm.
+		// Button 4 moves arm up until the upper touch sensor is triggered
+		// Button 2 moves arm down until the lower touch sensor is triggered
+		bool armUpBtnPressed = (joy1Btn(4) == 1 && joy1Btn(2) != 1);
+		bool armDownBtnPressed = (joy1Btn(4) != 1 && joy1Btn(2) == 1);
+		short arm = 0;
+		if(armUpBtnPressed){
+			arm = 35;
+		}
+		else if(armDownBtnPressed){
+			arm = -20;
+		}
+		// control upward limit of the front arm. This makes sure the
+		// arm does not go too high
+		if (SensorValue(ArmLimitUp) == 1 && arm > 0) {
+			arm = 0;
+		}
+		if(SensorValue(ArmLimitDown) == 1 && arm < 0){
 			arm = 0;
 		}
 		motor[Arm] = -arm;
 
-// Driving - tank drive control
-//		motor[Left] = - map(joystick.joy1_y1, 127, maxPower);
-//		motor[Right] = map(joystick.joy1_y2, 127, maxPower);
+	// Driving - tank drive control
+		motor[Left] = - map(joystick.joy1_y1, 127, maxPower);
+		motor[Right] = map(joystick.joy1_y2, 127, maxPower);
 
 	 	getJoystickSettings(joystick);
   }
